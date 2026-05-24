@@ -317,6 +317,201 @@
     .status.ok  { color: var(--success); }
     .status.err { color: var(--error); }
 
+    /* ── EXPAND BUTTON ── */
+    .btn-expand {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 4px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.25s, border-color 0.25s;
+    }
+    .btn-expand::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(200,240,96,0.07) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+    .btn-expand:hover::before { transform: translateX(100%); }
+    .btn-expand:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── MODAL ── */
+    #modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+      padding: 1.5rem;
+    }
+
+    #modal {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 780px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(200,240,96,0.06);
+      animation: modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.94) translateY(12px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    #modal-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    #modal-title-tag {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    #modal-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    #modal-title span { color: var(--accent); }
+
+    #search-wrap {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 5px 10px;
+      transition: border-color 0.2s;
+      min-width: 200px;
+    }
+
+    #search-wrap:focus-within {
+      border-color: rgba(200,240,96,0.35);
+    }
+
+    #modal-search {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      width: 100%;
+      min-width: 0;
+    }
+
+    #modal-search::placeholder { color: var(--muted); }
+
+    #search-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    #search-count.found { color: var(--accent); }
+
+    .btn-modal-copy, .btn-modal-close {
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-modal-copy::before, .btn-modal-close::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(200,240,96,0.07) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+
+    .btn-modal-copy:hover::before, .btn-modal-close:hover::before { transform: translateX(100%); }
+    .btn-modal-copy:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-modal-close:hover { border-color: var(--error); color: var(--error); }
+
+    .btn-modal-close { padding: 6px 8px; }
+
+    #modal-body {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      line-height: 1.75;
+      padding: 20px;
+      overflow: auto;
+      flex: 1;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      min-height: 0;
+    }
+
+    /* ── SYNTAX COLORS ── */
+    .j-key    { color: #79b8ff; }        /* blue  — keys         */
+    .j-str    { color: #9ecbff; }        /* light blue — strings */
+    .j-num    { color: #f8c555; }        /* yellow — numbers     */
+    .j-bool   { color: #c8f060; }        /* green  — true/false  */
+    .j-null   { color: #ff7b72; }        /* red    — null        */
+    .j-brace  { color: #6e7681; }        /* grey   — {} []       */
+    .j-colon  { color: #6e7681; }        /* grey   — :           */
+    .j-comma  { color: #6e7681; }        /* grey   — ,           */
+    .j-warn   { color: #ff9f43; font-weight: 500; background: rgba(255,159,67,0.08); display:block; padding:2px 0; }
+
+    .j-highlight {
+      background: rgba(200,240,96,0.28);
+      border-radius: 2px;
+      color: #0e0e0f;
+      font-weight: 600;
+    }
+
     footer {
       width: 100%;
       max-width: 820px;
@@ -350,7 +545,13 @@
       <textarea id="input" spellcheck="false" placeholder='{"text": "{\"key\": \"value\"}"}'></textarea>
     </div>
     <div class="panel">
-      <div class="panel-label"><span class="dot" id="out-dot"></span> Salida (legible)</div>
+      <div class="panel-label" style="justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:6px;"><span class="dot" id="out-dot"></span> Salida (legible)</div>
+        <button class="btn-expand" id="expand-btn" onclick="abrirModal()" title="Expandir">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          Expandir
+        </button>
+      </div>
       <pre id="output">// El resultado aparecerá aquí...</pre>
     </div>
   </div>
@@ -406,10 +607,9 @@
         .trim();
     }
 
-    function repararJSON(str) {
+    function cerrarJSON(str) {
       const stack = [];
-      let inString = false;
-      let escape = false;
+      let inString = false, escape = false;
       for (let i = 0; i < str.length; i++) {
         const ch = str[i];
         if (escape) { escape = false; continue; }
@@ -420,35 +620,55 @@
         else if (ch === '[') stack.push(']');
         else if ((ch === '}' || ch === ']') && stack.length && stack[stack.length - 1] === ch) stack.pop();
       }
+      if (inString) str += '"';
       const closing = stack.reverse().join('');
-      if (!closing) return { ok: false };
+      const result = str + closing;
       try {
-        const parsed = JSON.parse(str + closing);
-        return { ok: true, value: parsed, truncado: true, cierre: closing };
+        return { ok: true, value: JSON.parse(result), added: closing.length > 0 || inString };
       } catch (e) {
         return { ok: false };
       }
     }
 
+    function repararTruncado(str) {
+      // Scan backwards finding safe truncation points (,  }  ]) and try closing
+      for (let i = str.length - 1; i > str.length * 0.05; i--) {
+        const ch = str[i];
+        if (ch !== ',' && ch !== '}' && ch !== ']') continue;
+        const r = cerrarJSON(str.slice(0, i + 1));
+        if (r.ok) return { ok: true, value: r.value, truncado: true };
+      }
+      return { ok: false };
+    }
+
     function intentarParsear(raw) {
       const c = limpiarRaw(raw);
-      const intentos = [
-        { str: c, wrap: false },
-        { str: '{' + c + '}', wrap: true },
-        { str: '[' + c + ']', wrap: true },
-        { str: c.replace(/^[^{[]*/, '').replace(/[^}\]]*$/, ''), wrap: false },
+      const variantes = [
+        c,
+        '{' + c + '}',
+        '[' + c + ']',
+        c.replace(/^[^{[]*/, '').replace(/[^}\]]*$/, ''),
       ];
-      for (const { str } of intentos) {
+
+      // Pass 1: parse as-is
+      for (const v of variantes) {
         try {
-          const parsed = JSON.parse(str);
-          return { ok: true, value: parsed, truncado: false };
+          return { ok: true, value: JSON.parse(v), truncado: false };
         } catch (e) {}
       }
-      // Modo tolerante: intentar reparar
-      for (const { str } of intentos) {
-        const r = repararJSON(str);
+
+      // Pass 2: close missing brackets only (structure intact)
+      for (const v of variantes) {
+        const r = cerrarJSON(v);
+        if (r.ok) return { ok: true, value: r.value, truncado: r.added };
+      }
+
+      // Pass 3: aggressive — scan backwards for last safe truncation point
+      for (const v of variantes) {
+        const r = repararTruncado(v);
         if (r.ok) return r;
       }
+
       return { ok: false };
     }
 
@@ -545,6 +765,149 @@
     document.getElementById('input').addEventListener('keydown', function(e) {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') transformar();
     });
+
+    // ── SYNTAX HIGHLIGHT ──
+    function escaparHTML(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function syntaxHighlight(json) {
+      const lines = json.split('\n');
+      return lines.map(line => {
+        // Detect warning marker
+        if (line.includes('⚠ ESTRUCTURA SE CORTA AQUÍ')) {
+          return `<span class="j-warn">${escaparHTML(line)}</span>`;
+        }
+        return line.replace(
+          /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"\s*:?)|\b(true|false)\b|\b(null)\b|(-?\d+\.?\d*([eE][+-]?\d+)?)|([{\[\]}])|([,])|(:)/g,
+          (match) => {
+            if (/^"/.test(match)) {
+              if (/:$/.test(match)) {
+                return `<span class="j-key">${escaparHTML(match.slice(0,-1))}</span><span class="j-colon">:</span>`;
+              }
+              return `<span class="j-str">${escaparHTML(match)}</span>`;
+            }
+            if (/true|false/.test(match)) return `<span class="j-bool">${match}</span>`;
+            if (/null/.test(match))       return `<span class="j-null">${match}</span>`;
+            if (/[{\[\]}]/.test(match))   return `<span class="j-brace">${escaparHTML(match)}</span>`;
+            if (/,/.test(match))           return `<span class="j-comma">${match}</span>`;
+            if (/:/.test(match))           return `<span class="j-colon">${match}</span>`;
+            return `<span class="j-num">${match}</span>`;
+          }
+        );
+      }).join('\n');
+    }
+
+    // ── RAW JSON TEXT (for copy/search) ──
+    let modalRawText = '';
+
+    function abrirModal() {
+      const pre = document.getElementById('output');
+      const raw = pre.innerText;
+      if (!raw || raw.startsWith('//') || raw.startsWith('No se')) return;
+      modalRawText = raw;
+
+      const overlay = document.getElementById('modal-overlay');
+      overlay.style.display = 'flex';
+      document.getElementById('modal-search').value = '';
+      document.getElementById('search-count').textContent = '';
+      document.getElementById('search-count').className = '';
+
+      renderModalContent(raw, '');
+      setTimeout(() => document.getElementById('modal-search').focus(), 100);
+
+      document.addEventListener('keydown', escapeModal);
+    }
+
+    function renderModalContent(text, query) {
+      const mb = document.getElementById('modal-body');
+      let html = syntaxHighlight(text);
+
+      if (query && query.length >= 1) {
+        // Highlight search matches — operate on the rendered HTML text nodes only
+        // We escape the query and match in text spans
+        const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        // Match outside HTML tags
+        html = html.replace(new RegExp(`(?![^<]*>)(${escaped})`, 'gi'),
+          `<span class="j-highlight">$1</span>`);
+      }
+      mb.innerHTML = html;
+    }
+
+    function buscarEnModal() {
+      const q = document.getElementById('modal-search').value;
+      renderModalContent(modalRawText, q);
+
+      const countEl = document.getElementById('search-count');
+      if (q.length === 0) {
+        countEl.textContent = '';
+        countEl.className = '';
+        return;
+      }
+      const matches = document.getElementById('modal-body').querySelectorAll('.j-highlight').length;
+      if (matches > 0) {
+        countEl.textContent = `${matches} coincidencia${matches !== 1 ? 's' : ''}`;
+        countEl.className = 'found';
+        // Scroll to first match
+        const first = document.getElementById('modal-body').querySelector('.j-highlight');
+        if (first) first.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      } else {
+        countEl.textContent = 'sin resultados';
+        countEl.className = '';
+      }
+    }
+
+    function cerrarModal() {
+      document.getElementById('modal-overlay').style.display = 'none';
+      document.removeEventListener('keydown', escapeModal);
+    }
+
+    function cerrarModalOverlay(e) {
+      if (e.target === document.getElementById('modal-overlay')) cerrarModal();
+    }
+
+    function escapeModal(e) {
+      if (e.key === 'Escape') cerrarModal();
+    }
+
+    function copiarModal() {
+      if (!modalRawText) return;
+      navigator.clipboard.writeText(modalRawText).then(() => {
+        const btn = document.querySelector('.btn-modal-copy');
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Copiado`;
+        setTimeout(() => {
+          btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copiar`;
+        }, 2000);
+      });
+    }
   </script>
+
+  <!-- MODAL -->
+  <div id="modal-overlay" style="display:none;" onclick="cerrarModalOverlay(event)">
+    <div id="modal">
+      <div id="modal-header">
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <span id="modal-title-tag">salida</span>
+          <span id="modal-title">JSON <span>Expandido</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+          <div id="search-wrap">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);flex-shrink:0;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input id="modal-search" type="text" placeholder="Buscar en JSON..." oninput="buscarEnModal()" autocomplete="off" spellcheck="false" />
+            <span id="search-count"></span>
+          </div>
+          <button class="btn-modal-copy" onclick="copiarModal()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            Copiar
+          </button>
+          <button class="btn-modal-close" onclick="cerrarModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+      </div>
+      <pre id="modal-body"></pre>
+    </div>
+  </div>
+
 </body>
 </html>
