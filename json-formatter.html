@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Unescape</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e0f;
+      --surface: #161618;
+      --surface2: #1e1e21;
+      --border: #2a2a2e;
+      --border2: #3a3a3f;
+      --accent: #c8f060;
+      --accent2: #a3d43a;
+      --text: #f0f0ee;
+      --muted: #7a7a80;
+      --error: #ff6b6b;
+      --success: #c8f060;
+      --radius: 6px;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { box-shadow: 0 0 4px var(--accent); }
+      50% { box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1.5rem;
+    }
+
+    header {
+      width: 100%;
+      max-width: 820px;
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.25rem;
+      animation: fadeIn 0.5s ease both;
+    }
+
+    .logo {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .logo-tag {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      text-align: right;
+      max-width: 220px;
+      line-height: 1.5;
+    }
+
+    .main {
+      width: 100%;
+      max-width: 820px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      animation: fadeIn 0.5s 0.1s ease both;
+    }
+
+    @media (max-width: 640px) {
+      .main { grid-template-columns: 1fr; }
+      header { flex-direction: column; align-items: flex-start; }
+      .hint { text-align: left; max-width: 100%; }
+    }
+
+    .panel {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .panel-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .panel:hover .panel-label {
+      color: var(--text);
+    }
+
+    .panel-label .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border2);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .panel-label .dot.active {
+      background: var(--accent);
+      animation: pulseDot 2s ease-in-out infinite;
+    }
+
+    textarea, pre {
+      font-family: 'DM Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.7;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      padding: 14px;
+      width: 100%;
+      min-height: 320px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.25s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
+      will-change: transform;
+    }
+
+    textarea:hover, pre:hover {
+      transform: translateY(-3px);
+      border-color: var(--border2);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(200,240,96,0.06);
+    }
+
+    textarea:focus {
+      transform: translateY(-3px);
+      border-color: rgba(200,240,96,0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(200,240,96,0.12);
+    }
+
+    textarea::placeholder {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    pre {
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      resize: none;
+      max-height: 520px;
+    }
+
+    pre.has-content {
+      border-color: var(--border2);
+    }
+
+    pre.has-content:hover {
+      border-color: rgba(200,240,96,0.3);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(200,240,96,0.08);
+    }
+
+    pre.has-error {
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    pre.has-warning {
+      border-color: #ff9f43;
+    }
+
+    pre.has-warning:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,159,67,0.15);
+    }
+
+    .status.warn { color: #ff9f43; }
+
+    .controls {
+      width: 100%;
+      max-width: 820px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0.75rem 0;
+      flex-wrap: wrap;
+      animation: fadeIn 0.5s 0.2s ease both;
+    }
+
+    button {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 9px 20px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.2s, border-color 0.2s, transform 0.15s;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.45s ease;
+    }
+
+    button:hover::before {
+      transform: translateX(100%);
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0e0e0f;
+      border-color: var(--accent);
+      transition: background 0.3s, border-color 0.3s, transform 0.15s;
+      background-size: 200% 100%;
+      background-image: linear-gradient(90deg, var(--accent) 0%, #e8ff80 40%, var(--accent2) 100%);
+      background-position: 100% 0;
+    }
+
+    .btn-primary:hover {
+      background-position: 0% 0;
+      border-color: var(--accent2);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border-color: var(--border);
+      transition: color 0.25s, border-color 0.25s, transform 0.15s;
+    }
+
+    .btn-ghost::before {
+      background: linear-gradient(90deg, transparent 0%, rgba(200,240,96,0.06) 50%, transparent 100%);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-copy {
+      background: transparent;
+      color: var(--muted);
+      border-color: var(--border);
+      margin-left: auto;
+      font-size: 12px;
+      padding: 6px 14px;
+      transition: color 0.25s, border-color 0.25s, transform 0.15s;
+    }
+
+    .btn-copy::before {
+      background: linear-gradient(90deg, transparent 0%, rgba(200,240,96,0.05) 50%, transparent 100%);
+    }
+
+    .btn-copy:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .btn-copy.copied {
+      color: var(--success);
+      border-color: var(--success);
+    }
+
+    .status {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      margin-left: 4px;
+      transition: color 0.3s;
+    }
+
+    .status.ok  { color: var(--success); }
+    .status.err { color: var(--error); }
+
+    footer {
+      width: 100%;
+      max-width: 820px;
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 4px;
+      animation: fadeIn 0.5s 0.3s ease both;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span class="logo-tag">utilidad</span>
+      <h1>JSON <span>Unescape</span></h1>
+    </div>
+    <p class="hint">Convierte JSON con strings escapados en JSON legible y anidado.</p>
+  </header>
+
+  <div class="main">
+    <div class="panel">
+      <div class="panel-label"><span class="dot active"></span> Entrada (con escapes)</div>
+      <textarea id="input" spellcheck="false" placeholder='{"text": "{\"key\": \"value\"}"}'></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-label"><span class="dot" id="out-dot"></span> Salida (legible)</div>
+      <pre id="output">// El resultado aparecerá aquí...</pre>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn-primary" onclick="transformar()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      Transformar
+    </button>
+    <button class="btn-ghost" onclick="limpiar()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+      Limpiar
+    </button>
+    <span class="status" id="status"></span>
+    <button class="btn-copy" id="copy-btn" onclick="copiar()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+      Copiar resultado
+    </button>
+  </div>
+
+  <footer>
+    <span>json-unescape · parseo recursivo de strings JSON anidados</span>
+    <span>funciona 100% en el navegador · sin datos enviados a ningún servidor</span>
+  </footer>
+
+  <script>
+    function unescapeDeep(value) {
+      if (typeof value === 'string') {
+        try {
+          const parsed = JSON.parse(value);
+          if (parsed !== null && (typeof parsed === 'object' || Array.isArray(parsed))) {
+            return unescapeDeep(parsed);
+          }
+          return parsed;
+        } catch (e) {
+          return value;
+        }
+      }
+      if (Array.isArray(value)) return value.map(unescapeDeep);
+      if (value !== null && typeof value === 'object') {
+        const out = {};
+        for (const k in value) out[k] = unescapeDeep(value[k]);
+        return out;
+      }
+      return value;
+    }
+
+    function limpiarRaw(str) {
+      return str
+        .replace(/\r\n/g, '\n')
+        .replace(/\r/g, '\n')
+        .replace(/[\u200B\uFEFF\u00A0]/g, '')
+        .trim();
+    }
+
+    function repararJSON(str) {
+      const stack = [];
+      let inString = false;
+      let escape = false;
+      for (let i = 0; i < str.length; i++) {
+        const ch = str[i];
+        if (escape) { escape = false; continue; }
+        if (ch === '\\' && inString) { escape = true; continue; }
+        if (ch === '"') { inString = !inString; continue; }
+        if (inString) continue;
+        if (ch === '{') stack.push('}');
+        else if (ch === '[') stack.push(']');
+        else if ((ch === '}' || ch === ']') && stack.length && stack[stack.length - 1] === ch) stack.pop();
+      }
+      const closing = stack.reverse().join('');
+      if (!closing) return { ok: false };
+      try {
+        const parsed = JSON.parse(str + closing);
+        return { ok: true, value: parsed, truncado: true, cierre: closing };
+      } catch (e) {
+        return { ok: false };
+      }
+    }
+
+    function intentarParsear(raw) {
+      const c = limpiarRaw(raw);
+      const intentos = [
+        { str: c, wrap: false },
+        { str: '{' + c + '}', wrap: true },
+        { str: '[' + c + ']', wrap: true },
+        { str: c.replace(/^[^{[]*/, '').replace(/[^}\]]*$/, ''), wrap: false },
+      ];
+      for (const { str } of intentos) {
+        try {
+          const parsed = JSON.parse(str);
+          return { ok: true, value: parsed, truncado: false };
+        } catch (e) {}
+      }
+      // Modo tolerante: intentar reparar
+      for (const { str } of intentos) {
+        const r = repararJSON(str);
+        if (r.ok) return r;
+      }
+      return { ok: false };
+    }
+
+    function renderResultado(pre, value, truncado) {
+      const result = JSON.stringify(value, null, 2);
+      if (!truncado) {
+        pre.textContent = result;
+        return;
+      }
+      // Insertar marcador visual de corte
+      const lines = result.split('\n');
+      // Encontrar la última línea con contenido real (antes de los cierres añadidos)
+      // Heurística: buscar la última línea que no sea solo } o ]
+      let cutLine = lines.length - 1;
+      for (let i = lines.length - 1; i >= 0; i--) {
+        const trimmed = lines[i].trim();
+        if (trimmed !== '}' && trimmed !== ']' && trimmed !== '') {
+          cutLine = i;
+          break;
+        }
+      }
+      pre.innerHTML = '';
+      const before = document.createElement('span');
+      before.textContent = lines.slice(0, cutLine + 1).join('\n');
+      pre.appendChild(before);
+
+      const marker = document.createElement('span');
+      marker.textContent = '\n\n// ⚠ ESTRUCTURA SE CORTA AQUÍ\n';
+      marker.style.cssText = 'color: #ff9f43; font-weight: 500; background: rgba(255,159,67,0.08); display: block; padding: 2px 0;';
+      pre.appendChild(marker);
+
+      const after = document.createElement('span');
+      after.style.color = 'var(--muted)';
+      after.textContent = lines.slice(cutLine + 1).join('\n');
+      pre.appendChild(after);
+    }
+
+    function transformar() {
+      const raw = document.getElementById('input').value.trim();
+      const pre = document.getElementById('output');
+      const status = document.getElementById('status');
+      const dot = document.getElementById('out-dot');
+
+      if (!raw) {
+        status.className = 'status err';
+        status.textContent = '⚠ pega algo primero';
+        return;
+      }
+
+      const resultado = intentarParsear(raw);
+
+      if (resultado.ok) {
+        const cleaned = unescapeDeep(resultado.value);
+        pre.className = resultado.truncado ? 'has-content has-warning' : 'has-content';
+        dot.classList.add('active');
+        renderResultado(pre, cleaned, resultado.truncado);
+        status.className = resultado.truncado ? 'status warn' : 'status ok';
+        const lines = JSON.stringify(cleaned, null, 2).split('\n').length;
+        status.textContent = resultado.truncado
+          ? `⚠ ${lines} líneas · estructura incompleta`
+          : `✓ ${lines} líneas`;
+      } else {
+        pre.textContent = 'No se pudo interpretar el contenido.\nVerifica que sea JSON o un fragmento JSON válido.';
+        pre.className = 'has-error';
+        dot.classList.remove('active');
+        status.className = 'status err';
+        status.textContent = '✗ formato no reconocido';
+      }
+    }
+
+    function limpiar() {
+      document.getElementById('input').value = '';
+      const pre = document.getElementById('output');
+      pre.textContent = '// El resultado aparecerá aquí...';
+      pre.className = '';
+      document.getElementById('status').textContent = '';
+      document.getElementById('out-dot').classList.remove('active');
+    }
+
+    function copiar() {
+      const text = document.getElementById('output').innerText;
+      if (!text || text.startsWith('//') || text.startsWith('No se')) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copy-btn');
+        btn.classList.add('copied');
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Copiado`;
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copiar resultado`;
+        }, 2000);
+      });
+    }
+
+    document.getElementById('input').addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') transformar();
+    });
+  </script>
+</body>
+</html>
