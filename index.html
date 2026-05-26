@@ -24,14 +24,19 @@
     }
 
     @keyframes pulseDot {
-      0%, 100% { box-shadow: 0 0 4px var(--accent); }
-      50% { box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent); }
+      0%,100% { box-shadow: 0 0 4px var(--accent); }
+      50%      { box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent); }
+    }
+    @keyframes fadeIn {
+      from { opacity:0; transform:translateY(6px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    @keyframes modalIn {
+      from { opacity:0; transform:scale(0.94) translateY(12px); }
+      to   { opacity:1; transform:scale(1) translateY(0); }
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    html, body { height: 100%; }
 
     body {
       font-family: 'Syne', sans-serif;
@@ -41,492 +46,300 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 3rem 1.5rem;
+      padding: 1.5rem 2rem;
+      gap: 0;
     }
 
+    /* ── HEADER ── */
     header {
       width: 100%;
-      max-width: 820px;
-      margin-bottom: 2.5rem;
+      max-width: 1600px;
+      margin-bottom: 1.25rem;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: space-between;
       gap: 1rem;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 1.25rem;
+      padding-bottom: 1rem;
       animation: fadeIn 0.5s ease both;
+      flex-wrap: wrap;
     }
+    .logo { display:flex; flex-direction:column; gap:2px; }
+    .logo-tag { font-size:10px; letter-spacing:0.2em; color:var(--accent); text-transform:uppercase; font-weight:600; }
+    h1 { font-size:1.5rem; font-weight:700; color:var(--text); letter-spacing:-0.02em; line-height:1; }
+    h1 span { color:var(--accent); }
+    .hint { font-size:11px; color:var(--muted); font-family:'DM Mono',monospace; text-align:right; max-width:260px; line-height:1.5; }
 
-    .logo {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .logo-tag {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      color: var(--accent);
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-
-    h1 {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.02em;
-      line-height: 1;
-    }
-
-    h1 span { color: var(--accent); }
-
-    .hint {
-      font-size: 12px;
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-      text-align: right;
-      max-width: 220px;
-      line-height: 1.5;
-    }
-
-    .main {
+    /* ── CONTROLS ── */
+    .controls {
       width: 100%;
-      max-width: 820px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      max-width: 1600px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0.5rem 0;
+      flex-wrap: wrap;
       animation: fadeIn 0.5s 0.1s ease both;
     }
 
-    @media (max-width: 640px) {
+    /* ── MAIN GRID ── */
+    .main {
+      width: 100%;
+      max-width: 1600px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      animation: fadeIn 0.5s 0.15s ease both;
+    }
+
+    /* tablet */
+    @media (max-width: 768px) {
+      body { padding: 1rem; }
       .main { grid-template-columns: 1fr; }
       header { flex-direction: column; align-items: flex-start; }
-      .hint { text-align: left; max-width: 100%; }
+      .hint { text-align:left; max-width:100%; }
+      h1 { font-size: 1.25rem; }
+      textarea, pre { min-height: 220px; }
     }
 
-    .panel {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    /* mobile */
+    @media (max-width: 480px) {
+      body { padding: 0.75rem; }
+      .controls { gap: 6px; }
+      .btn-copy { margin-left: 0; }
+      footer { flex-direction: column; gap: 4px; }
     }
+
+    .panel { display:flex; flex-direction:column; gap:6px; min-width:0; }
 
     .panel-label {
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: color 0.2s;
+      font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+      color:var(--muted); font-weight:600;
+      display:flex; align-items:center; gap:6px;
+      transition:color 0.2s;
+      flex-wrap: nowrap;
     }
-
-    .panel:hover .panel-label {
-      color: var(--text);
-    }
-
+    .panel:hover .panel-label { color:var(--text); }
     .panel-label .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--border2);
-      transition: background 0.3s, box-shadow 0.3s;
+      width:6px; height:6px; border-radius:50%;
+      background:var(--border2);
+      transition:background 0.3s, box-shadow 0.3s;
+      flex-shrink:0;
     }
-
     .panel-label .dot.active {
-      background: var(--accent);
-      animation: pulseDot 2s ease-in-out infinite;
+      background:var(--accent);
+      animation:pulseDot 2s ease-in-out infinite;
     }
 
     textarea, pre {
-      font-family: 'DM Mono', monospace;
-      font-size: 12.5px;
-      line-height: 1.7;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      padding: 14px;
-      width: 100%;
-      min-height: 320px;
-      resize: vertical;
-      outline: none;
-      transition: border-color 0.25s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
-      will-change: transform;
+      font-family:'DM Mono',monospace;
+      font-size:12.5px;
+      line-height:1.7;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      color:var(--text);
+      padding:14px;
+      width:100%;
+      min-height:340px;
+      resize:vertical;
+      outline:none;
+      transition:border-color 0.25s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
+      will-change:transform;
     }
-
     textarea:hover, pre:hover {
-      transform: translateY(-3px);
-      border-color: var(--border2);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(200,240,96,0.06);
+      transform:translateY(-3px);
+      border-color:var(--border2);
+      box-shadow:0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(200,240,96,0.06);
     }
-
     textarea:focus {
-      transform: translateY(-3px);
-      border-color: rgba(200,240,96,0.4);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(200,240,96,0.12);
+      transform:translateY(-3px);
+      border-color:rgba(200,240,96,0.4);
+      box-shadow:0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(200,240,96,0.12);
     }
-
-    textarea::placeholder {
-      color: var(--muted);
-      font-style: italic;
-    }
+    textarea::placeholder { color:var(--muted); font-style:italic; }
 
     pre {
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-      resize: none;
-      max-height: 520px;
+      overflow:auto; white-space:pre-wrap; word-break:break-word;
+      resize:none; max-height:65vh;
     }
-
-    pre.has-content {
-      border-color: var(--border2);
-    }
-
+    pre.has-content { border-color:var(--border2); }
     pre.has-content:hover {
-      border-color: rgba(200,240,96,0.3);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(200,240,96,0.08);
+      border-color:rgba(200,240,96,0.3);
+      box-shadow:0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(200,240,96,0.08);
     }
+    pre.has-error { border-color:var(--error); color:var(--error); }
+    pre.has-warning { border-color:#ff9f43; }
+    pre.has-warning:hover { box-shadow:0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,159,67,0.15); }
 
-    pre.has-error {
-      border-color: var(--error);
-      color: var(--error);
-    }
-
-    pre.has-warning {
-      border-color: #ff9f43;
-    }
-
-    pre.has-warning:hover {
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,159,67,0.15);
-    }
-
-    .status.warn { color: #ff9f43; }
-
-    .controls {
-      width: 100%;
-      max-width: 820px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 0.75rem 0;
-      flex-wrap: wrap;
-      animation: fadeIn 0.5s 0.2s ease both;
-    }
-
+    /* ── BUTTONS ── */
     button {
-      font-family: 'Syne', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      padding: 9px 20px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      border: 1px solid transparent;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      position: relative;
-      overflow: hidden;
-      transition: color 0.2s, border-color 0.2s, transform 0.15s;
+      font-family:'Syne',sans-serif; font-size:13px; font-weight:600;
+      letter-spacing:0.04em; padding:8px 18px;
+      border-radius:var(--radius); cursor:pointer;
+      border:1px solid transparent;
+      display:flex; align-items:center; gap:7px;
+      position:relative; overflow:hidden;
+      transition:color 0.2s, border-color 0.2s, transform 0.15s;
+      white-space: nowrap;
     }
-
     button::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
-      transform: translateX(-100%);
-      transition: transform 0.45s ease;
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.08) 50%,transparent 100%);
+      transform:translateX(-100%); transition:transform 0.45s ease;
     }
-
-    button:hover::before {
-      transform: translateX(100%);
-    }
-
-    button:active {
-      transform: scale(0.97);
-    }
+    button:hover::before { transform:translateX(100%); }
+    button:active { transform:scale(0.97); }
 
     .btn-primary {
-      background: var(--accent);
-      color: #0e0e0f;
-      border-color: var(--accent);
-      transition: background 0.3s, border-color 0.3s, transform 0.15s;
-      background-size: 200% 100%;
-      background-image: linear-gradient(90deg, var(--accent) 0%, #e8ff80 40%, var(--accent2) 100%);
-      background-position: 100% 0;
+      background-image:linear-gradient(90deg,var(--accent) 0%,#e8ff80 40%,var(--accent2) 100%);
+      background-size:200% 100%; background-position:100% 0;
+      color:#0e0e0f; border-color:var(--accent);
+      transition:background-position 0.4s ease, border-color 0.3s, transform 0.15s;
     }
-
-    .btn-primary:hover {
-      background-position: 0% 0;
-      border-color: var(--accent2);
-    }
+    .btn-primary:hover { background-position:0% 0; border-color:var(--accent2); }
 
     .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      border-color: var(--border);
-      transition: color 0.25s, border-color 0.25s, transform 0.15s;
+      background:transparent; color:var(--muted); border-color:var(--border);
+      transition:color 0.25s, border-color 0.25s, transform 0.15s;
     }
-
-    .btn-ghost::before {
-      background: linear-gradient(90deg, transparent 0%, rgba(200,240,96,0.06) 50%, transparent 100%);
-    }
-
-    .btn-ghost:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
+    .btn-ghost::before { background:linear-gradient(90deg,transparent 0%,rgba(200,240,96,0.06) 50%,transparent 100%); }
+    .btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
 
     .btn-copy {
-      background: transparent;
-      color: var(--muted);
-      border-color: var(--border);
-      margin-left: auto;
-      font-size: 12px;
-      padding: 6px 14px;
-      transition: color 0.25s, border-color 0.25s, transform 0.15s;
+      background:transparent; color:var(--muted); border-color:var(--border);
+      margin-left:auto; font-size:12px; padding:6px 14px;
+      transition:color 0.25s, border-color 0.25s, transform 0.15s;
     }
+    .btn-copy::before { background:linear-gradient(90deg,transparent 0%,rgba(200,240,96,0.05) 50%,transparent 100%); }
+    .btn-copy:hover { border-color:var(--border2); color:var(--text); }
+    .btn-copy.copied { color:var(--success); border-color:var(--success); }
 
-    .btn-copy::before {
-      background: linear-gradient(90deg, transparent 0%, rgba(200,240,96,0.05) 50%, transparent 100%);
-    }
-
-    .btn-copy:hover {
-      border-color: var(--border2);
-      color: var(--text);
-    }
-
-    .btn-copy.copied {
-      color: var(--success);
-      border-color: var(--success);
-    }
-
-    .status {
-      font-size: 12px;
-      font-family: 'DM Mono', monospace;
-      color: var(--muted);
-      margin-left: 4px;
-      transition: color 0.3s;
-    }
-
-    .status.ok  { color: var(--success); }
-    .status.err { color: var(--error); }
-
-    /* ── EXPAND BUTTON ── */
     .btn-expand {
-      font-family: 'Syne', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      padding: 4px 10px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      position: relative;
-      overflow: hidden;
-      transition: color 0.25s, border-color 0.25s;
+      font-family:'Syne',sans-serif; font-size:11px; font-weight:600;
+      letter-spacing:0.04em; padding:4px 10px;
+      border-radius:var(--radius); cursor:pointer;
+      border:1px solid var(--border); background:transparent; color:var(--muted);
+      display:flex; align-items:center; gap:5px;
+      position:relative; overflow:hidden;
+      transition:color 0.25s, border-color 0.25s;
     }
     .btn-expand::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(200,240,96,0.07) 50%, transparent 100%);
-      transform: translateX(-100%);
-      transition: transform 0.4s ease;
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(90deg,transparent 0%,rgba(200,240,96,0.07) 50%,transparent 100%);
+      transform:translateX(-100%); transition:transform 0.4s ease;
     }
-    .btn-expand:hover::before { transform: translateX(100%); }
-    .btn-expand:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-expand:hover::before { transform:translateX(100%); }
+    .btn-expand:hover { border-color:var(--accent); color:var(--accent); }
+
+    .status {
+      font-size:12px; font-family:'DM Mono',monospace;
+      color:var(--muted); margin-left:4px; transition:color 0.3s;
+    }
+    .status.ok   { color:var(--success); }
+    .status.err  { color:var(--error); }
+    .status.warn { color:#ff9f43; }
+
+    /* ── FOOTER ── */
+    footer {
+      width:100%; max-width:1600px;
+      margin-top:1.25rem; padding-top:0.75rem;
+      border-top:1px solid var(--border);
+      font-size:11px; color:var(--muted); font-family:'DM Mono',monospace;
+      display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;
+      animation:fadeIn 0.5s 0.3s ease both;
+    }
 
     /* ── MODAL ── */
     #modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.2s ease;
-      padding: 1.5rem;
+      position:fixed; inset:0;
+      background:rgba(0,0,0,0.72);
+      backdrop-filter:blur(4px);
+      z-index:1000;
+      display:flex; align-items:center; justify-content:center;
+      animation:fadeIn 0.2s ease;
+      padding:1rem;
     }
-
     #modal {
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      border-radius: 10px;
-      width: 100%;
-      max-width: 780px;
-      max-height: 88vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(200,240,96,0.06);
-      animation: modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1) both;
+      background:var(--surface);
+      border:1px solid var(--border2);
+      border-radius:10px;
+      width:100%; max-width:900px; max-height:90vh;
+      display:flex; flex-direction:column;
+      box-shadow:0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(200,240,96,0.06);
+      animation:modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1) both;
     }
-
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(0.94) translateY(12px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
     #modal-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
+      display:flex; align-items:center; gap:10px;
+      padding:14px 18px;
+      border-bottom:1px solid var(--border);
+      flex-shrink:0; flex-wrap:wrap; gap:8px;
     }
-
-    #modal-title-tag {
-      font-size: 9px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    #modal-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.02em;
-    }
-
-    #modal-title span { color: var(--accent); }
+    #modal-title-tag { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); font-weight:600; }
+    #modal-title { font-family:'Syne',sans-serif; font-size:1rem; font-weight:700; color:var(--text); letter-spacing:-0.02em; }
+    #modal-title span { color:var(--accent); }
 
     #search-wrap {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 5px 10px;
-      transition: border-color 0.2s;
-      min-width: 200px;
+      display:flex; align-items:center; gap:7px;
+      background:var(--surface2); border:1px solid var(--border);
+      border-radius:var(--radius); padding:5px 10px;
+      transition:border-color 0.2s; flex:1; min-width:140px;
     }
-
-    #search-wrap:focus-within {
-      border-color: rgba(200,240,96,0.35);
-    }
-
+    #search-wrap:focus-within { border-color:rgba(200,240,96,0.35); }
     #modal-search {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--text);
-      width: 100%;
-      min-width: 0;
+      font-family:'DM Mono',monospace; font-size:12px;
+      background:transparent; border:none; outline:none;
+      color:var(--text); width:100%; min-width:0;
     }
+    #modal-search::placeholder { color:var(--muted); }
+    #search-count { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); white-space:nowrap; flex-shrink:0; }
+    #search-count.found { color:var(--accent); }
 
-    #modal-search::placeholder { color: var(--muted); }
-
-    #search-count {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--muted);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    #search-count.found { color: var(--accent); }
+    .modal-actions { display:flex; align-items:center; gap:6px; margin-left:auto; flex-shrink:0; }
 
     .btn-modal-copy, .btn-modal-close {
-      font-family: 'Syne', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 6px 12px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      position: relative;
-      overflow: hidden;
-      transition: color 0.2s, border-color 0.2s;
+      font-family:'Syne',sans-serif; font-size:12px; font-weight:600;
+      padding:6px 12px; border-radius:var(--radius);
+      border:1px solid var(--border); background:transparent; color:var(--muted);
+      cursor:pointer; display:flex; align-items:center; gap:6px;
+      position:relative; overflow:hidden;
+      transition:color 0.2s, border-color 0.2s;
     }
-
     .btn-modal-copy::before, .btn-modal-close::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(200,240,96,0.07) 50%, transparent 100%);
-      transform: translateX(-100%);
-      transition: transform 0.4s ease;
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(90deg,transparent 0%,rgba(200,240,96,0.07) 50%,transparent 100%);
+      transform:translateX(-100%); transition:transform 0.4s ease;
     }
-
-    .btn-modal-copy:hover::before, .btn-modal-close:hover::before { transform: translateX(100%); }
-    .btn-modal-copy:hover { border-color: var(--accent); color: var(--accent); }
-    .btn-modal-close:hover { border-color: var(--error); color: var(--error); }
-
-    .btn-modal-close { padding: 6px 8px; }
+    .btn-modal-copy:hover::before, .btn-modal-close:hover::before { transform:translateX(100%); }
+    .btn-modal-copy:hover { border-color:var(--accent); color:var(--accent); }
+    .btn-modal-close { padding:6px 8px; }
+    .btn-modal-close:hover { border-color:var(--error); color:var(--error); }
 
     #modal-body {
-      font-family: 'DM Mono', monospace;
-      font-size: 13px;
-      line-height: 1.75;
-      padding: 20px;
-      overflow: auto;
-      flex: 1;
-      white-space: pre-wrap;
-      word-break: break-word;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--text);
-      min-height: 0;
+      font-family:'DM Mono',monospace; font-size:13px; line-height:1.75;
+      padding:18px 20px; overflow:auto; flex:1;
+      white-space:pre-wrap; word-break:break-word;
+      background:transparent; border:none; outline:none; color:var(--text); min-height:0;
+    }
+
+    @media (max-width: 600px) {
+      #modal { max-height:95vh; }
+      #modal-header { padding:10px 12px; }
+      #modal-body { font-size:11px; padding:12px; }
+      .btn-modal-copy span { display:none; }
     }
 
     /* ── SYNTAX COLORS ── */
-    .j-key    { color: #79b8ff; }        /* blue  — keys         */
-    .j-str    { color: #9ecbff; }        /* light blue — strings */
-    .j-num    { color: #f8c555; }        /* yellow — numbers     */
-    .j-bool   { color: #c8f060; }        /* green  — true/false  */
-    .j-null   { color: #ff7b72; }        /* red    — null        */
-    .j-brace  { color: #6e7681; }        /* grey   — {} []       */
-    .j-colon  { color: #6e7681; }        /* grey   — :           */
-    .j-comma  { color: #6e7681; }        /* grey   — ,           */
-    .j-warn   { color: #ff9f43; font-weight: 500; background: rgba(255,159,67,0.08); display:block; padding:2px 0; }
-
-    .j-highlight {
-      background: rgba(200,240,96,0.28);
-      border-radius: 2px;
-      color: #0e0e0f;
-      font-weight: 600;
-    }
-
-    footer {
-      width: 100%;
-      max-width: 820px;
-      margin-top: 2.5rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
-      font-size: 11px;
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 4px;
-      animation: fadeIn 0.5s 0.3s ease both;
-    }
+    .j-key   { color:#79b8ff; }
+    .j-str   { color:#9ecbff; }
+    .j-num   { color:#f8c555; }
+    .j-bool  { color:#c8f060; }
+    .j-null  { color:#ff7b72; }
+    .j-brace { color:#6e7681; }
+    .j-colon { color:#6e7681; }
+    .j-comma { color:#6e7681; }
+    .j-warn  { color:#ff9f43; font-weight:500; background:rgba(255,159,67,0.08); display:block; padding:2px 0; }
+    .j-highlight { background:rgba(200,240,96,0.28); border-radius:2px; color:#0e0e0f; font-weight:600; }
   </style>
 </head>
 <body>
@@ -538,23 +351,6 @@
     </div>
     <p class="hint">Convierte JSON con strings escapados en JSON legible y anidado.</p>
   </header>
-
-  <div class="main">
-    <div class="panel">
-      <div class="panel-label"><span class="dot active"></span> Entrada (con escapes)</div>
-      <textarea id="input" spellcheck="false" placeholder='{"text": "{\"key\": \"value\"}"}'></textarea>
-    </div>
-    <div class="panel">
-      <div class="panel-label" style="justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:6px;"><span class="dot" id="out-dot"></span> Salida (legible)</div>
-        <button class="btn-expand" id="expand-btn" onclick="abrirModal()" title="Expandir">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-          Expandir
-        </button>
-      </div>
-      <pre id="output">// El resultado aparecerá aquí...</pre>
-    </div>
-  </div>
 
   <div class="controls">
     <button class="btn-primary" onclick="transformar()">
@@ -572,12 +368,57 @@
     </button>
   </div>
 
+  <div class="main">
+    <div class="panel">
+      <div class="panel-label"><span class="dot active"></span> Entrada (con escapes)</div>
+      <textarea id="input" spellcheck="false" placeholder='{"text": "{\"key\": \"value\"}'></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-label" style="justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:6px;"><span class="dot" id="out-dot"></span> Salida (legible)</div>
+        <button class="btn-expand" id="expand-btn" onclick="abrirModal()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          Expandir
+        </button>
+      </div>
+      <pre id="output">// El resultado aparecerá aquí...</pre>
+    </div>
+  </div>
+
   <footer>
     <span>json-unescape · parseo recursivo de strings JSON anidados</span>
     <span>funciona 100% en el navegador · sin datos enviados a ningún servidor</span>
   </footer>
 
+  <!-- MODAL -->
+  <div id="modal-overlay" style="display:none;" onclick="cerrarModalOverlay(event)">
+    <div id="modal">
+      <div id="modal-header">
+        <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0;">
+          <span id="modal-title-tag">salida</span>
+          <span id="modal-title">JSON <span>Expandido</span></span>
+        </div>
+        <div id="search-wrap">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);flex-shrink:0;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input id="modal-search" type="text" placeholder="Buscar en JSON..." oninput="buscarEnModal()" autocomplete="off" spellcheck="false" />
+          <span id="search-count"></span>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-modal-copy" onclick="copiarModal()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span>Copiar</span>
+          </button>
+          <button class="btn-modal-close" onclick="cerrarModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+      </div>
+      <pre id="modal-body"></pre>
+    </div>
+  </div>
+
   <script>
+    // ── UNESCAPE DEEP: applies AFTER parsing, recursively ──
     function unescapeDeep(value) {
       if (typeof value === 'string') {
         try {
@@ -586,9 +427,7 @@
             return unescapeDeep(parsed);
           }
           return parsed;
-        } catch (e) {
-          return value;
-        }
+        } catch (e) { return value; }
       }
       if (Array.isArray(value)) return value.map(unescapeDeep);
       if (value !== null && typeof value === 'object') {
@@ -599,14 +438,15 @@
       return value;
     }
 
+    // ── CLEAN RAW INPUT ──
     function limpiarRaw(str) {
       return str
-        .replace(/\r\n/g, '\n')
-        .replace(/\r/g, '\n')
+        .replace(/\r\n/g, '\n').replace(/\r/g, '\n')
         .replace(/[\u200B\uFEFF\u00A0]/g, '')
         .trim();
     }
 
+    // ── CLOSE OPEN BRACKETS/STRINGS ──
     function cerrarJSON(str) {
       const stack = [];
       let inString = false, escape = false;
@@ -618,20 +458,17 @@
         if (inString) continue;
         if (ch === '{') stack.push('}');
         else if (ch === '[') stack.push(']');
-        else if ((ch === '}' || ch === ']') && stack.length && stack[stack.length - 1] === ch) stack.pop();
+        else if ((ch === '}' || ch === ']') && stack.length && stack[stack.length-1] === ch) stack.pop();
       }
       if (inString) str += '"';
       const closing = stack.reverse().join('');
-      const result = str + closing;
       try {
-        return { ok: true, value: JSON.parse(result), added: closing.length > 0 || inString };
-      } catch (e) {
-        return { ok: false };
-      }
+        return { ok: true, value: JSON.parse(str + closing), added: closing.length > 0 || inString };
+      } catch(e) { return { ok: false }; }
     }
 
+    // ── AGGRESSIVE BACKWARD SCAN ──
     function repararTruncado(str) {
-      // Scan backwards finding safe truncation points (,  }  ]) and try closing
       for (let i = str.length - 1; i > str.length * 0.05; i--) {
         const ch = str[i];
         if (ch !== ',' && ch !== '}' && ch !== ']') continue;
@@ -641,6 +478,7 @@
       return { ok: false };
     }
 
+    // ── 3-PASS PARSER ──
     function intentarParsear(raw) {
       const c = limpiarRaw(raw);
       const variantes = [
@@ -649,46 +487,55 @@
         '[' + c + ']',
         c.replace(/^[^{[]*/, '').replace(/[^}\]]*$/, ''),
       ];
-
-      // Pass 1: parse as-is
+      // Pass 1: direct
       for (const v of variantes) {
-        try {
-          return { ok: true, value: JSON.parse(v), truncado: false };
-        } catch (e) {}
+        try { return { ok: true, value: JSON.parse(v), truncado: false }; } catch(e) {}
       }
-
-      // Pass 2: close missing brackets only (structure intact)
+      // Pass 2: close brackets
       for (const v of variantes) {
         const r = cerrarJSON(v);
         if (r.ok) return { ok: true, value: r.value, truncado: r.added };
       }
-
-      // Pass 3: aggressive — scan backwards for last safe truncation point
+      // Pass 3: backward scan
       for (const v of variantes) {
         const r = repararTruncado(v);
         if (r.ok) return r;
       }
-
       return { ok: false };
     }
 
+    // ── PRETTY PRINT: unescape \n \t inside string values for display ──
+    function prettyPrint(value) {
+      // Custom replacer: JSON.stringify re-escapes newlines inside strings.
+      // We post-process the output to show them as actual line breaks.
+      const raw = JSON.stringify(value, null, 2);
+      // Replace \n \t \r inside JSON string values (not in keys or structure)
+      // We do this carefully: only replace inside quoted strings
+      return raw.replace(/"((?:[^"\\]|\\.)*)"/g, (match, inner) => {
+        const unescaped = inner
+          .replace(/\\n/g, '\n')
+          .replace(/\\t/g, '\t')
+          .replace(/\\r/g, '');
+        return '"' + unescaped + '"';
+      });
+    }
+
+    // ── RENDER WITH OPTIONAL CUT MARKER ──
     function renderResultado(pre, value, truncado) {
-      const result = JSON.stringify(value, null, 2);
+      // Apply unescapeDeep HERE so nested escaped strings are always expanded
+      const cleaned = unescapeDeep(value);
+      const result = prettyPrint(cleaned);
+
+      lastRenderedText = result;
       if (!truncado) {
         pre.textContent = result;
-        return;
+        return result;
       }
-      // Insertar marcador visual de corte
       const lines = result.split('\n');
-      // Encontrar la última línea con contenido real (antes de los cierres añadidos)
-      // Heurística: buscar la última línea que no sea solo } o ]
       let cutLine = lines.length - 1;
       for (let i = lines.length - 1; i >= 0; i--) {
-        const trimmed = lines[i].trim();
-        if (trimmed !== '}' && trimmed !== ']' && trimmed !== '') {
-          cutLine = i;
-          break;
-        }
+        const t = lines[i].trim();
+        if (t !== '}' && t !== ']' && t !== '') { cutLine = i; break; }
       }
       pre.innerHTML = '';
       const before = document.createElement('span');
@@ -697,36 +544,33 @@
 
       const marker = document.createElement('span');
       marker.textContent = '\n\n// ⚠ ESTRUCTURA SE CORTA AQUÍ\n';
-      marker.style.cssText = 'color: #ff9f43; font-weight: 500; background: rgba(255,159,67,0.08); display: block; padding: 2px 0;';
+      marker.style.cssText = 'color:#ff9f43;font-weight:500;background:rgba(255,159,67,0.08);display:block;padding:2px 0;';
       pre.appendChild(marker);
 
       const after = document.createElement('span');
       after.style.color = 'var(--muted)';
       after.textContent = lines.slice(cutLine + 1).join('\n');
       pre.appendChild(after);
+      return result;
     }
 
+    // ── TRANSFORM ──
     function transformar() {
       const raw = document.getElementById('input').value.trim();
       const pre = document.getElementById('output');
       const status = document.getElementById('status');
       const dot = document.getElementById('out-dot');
 
-      if (!raw) {
-        status.className = 'status err';
-        status.textContent = '⚠ pega algo primero';
-        return;
-      }
+      if (!raw) { status.className = 'status err'; status.textContent = '⚠ pega algo primero'; return; }
 
       const resultado = intentarParsear(raw);
 
       if (resultado.ok) {
-        const cleaned = unescapeDeep(resultado.value);
         pre.className = resultado.truncado ? 'has-content has-warning' : 'has-content';
         dot.classList.add('active');
-        renderResultado(pre, cleaned, resultado.truncado);
+        const finalText = renderResultado(pre, resultado.value, resultado.truncado);
         status.className = resultado.truncado ? 'status warn' : 'status ok';
-        const lines = JSON.stringify(cleaned, null, 2).split('\n').length;
+        const lines = finalText.split('\n').length;
         status.textContent = resultado.truncado
           ? `⚠ ${lines} líneas · estructura incompleta`
           : `✓ ${lines} líneas`;
@@ -739,6 +583,7 @@
       }
     }
 
+    // ── LIMPIAR ──
     function limpiar() {
       document.getElementById('input').value = '';
       const pre = document.getElementById('output');
@@ -748,10 +593,13 @@
       document.getElementById('out-dot').classList.remove('active');
     }
 
+    // ── COPIAR ──
+    // Store last rendered text for reliable copying
+    let lastRenderedText = '';
+
     function copiar() {
-      const text = document.getElementById('output').innerText;
-      if (!text || text.startsWith('//') || text.startsWith('No se')) return;
-      navigator.clipboard.writeText(text).then(() => {
+      if (!lastRenderedText || lastRenderedText.startsWith('//') || lastRenderedText.startsWith('No se')) return;
+      navigator.clipboard.writeText(lastRenderedText).then(() => {
         const btn = document.getElementById('copy-btn');
         btn.classList.add('copied');
         btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Copiado`;
@@ -759,6 +607,15 @@
           btn.classList.remove('copied');
           btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copiar resultado`;
         }, 2000);
+      }).catch(() => {
+        // Fallback for browsers that block clipboard API
+        const ta = document.createElement('textarea');
+        ta.value = lastRenderedText;
+        ta.style.cssText = 'position:fixed;opacity:0;';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
       });
     }
 
@@ -772,64 +629,48 @@
     }
 
     function syntaxHighlight(json) {
-      const lines = json.split('\n');
-      return lines.map(line => {
-        // Detect warning marker
-        if (line.includes('⚠ ESTRUCTURA SE CORTA AQUÍ')) {
+      return json.split('\n').map(line => {
+        if (line.includes('⚠ ESTRUCTURA SE CORTA AQUÍ'))
           return `<span class="j-warn">${escaparHTML(line)}</span>`;
-        }
         return line.replace(
           /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"\s*:?)|\b(true|false)\b|\b(null)\b|(-?\d+\.?\d*([eE][+-]?\d+)?)|([{\[\]}])|([,])|(:)/g,
           (match) => {
             if (/^"/.test(match)) {
-              if (/:$/.test(match)) {
-                return `<span class="j-key">${escaparHTML(match.slice(0,-1))}</span><span class="j-colon">:</span>`;
-              }
+              if (/:$/.test(match)) return `<span class="j-key">${escaparHTML(match.slice(0,-1))}</span><span class="j-colon">:</span>`;
               return `<span class="j-str">${escaparHTML(match)}</span>`;
             }
             if (/true|false/.test(match)) return `<span class="j-bool">${match}</span>`;
             if (/null/.test(match))       return `<span class="j-null">${match}</span>`;
             if (/[{\[\]}]/.test(match))   return `<span class="j-brace">${escaparHTML(match)}</span>`;
-            if (/,/.test(match))           return `<span class="j-comma">${match}</span>`;
-            if (/:/.test(match))           return `<span class="j-colon">${match}</span>`;
+            if (/,/.test(match))          return `<span class="j-comma">${match}</span>`;
+            if (/:/.test(match))          return `<span class="j-colon">${match}</span>`;
             return `<span class="j-num">${match}</span>`;
           }
         );
       }).join('\n');
     }
 
-    // ── RAW JSON TEXT (for copy/search) ──
+    // ── MODAL ──
     let modalRawText = '';
 
     function abrirModal() {
-      const pre = document.getElementById('output');
-      const raw = pre.innerText;
-      if (!raw || raw.startsWith('//') || raw.startsWith('No se')) return;
-      modalRawText = raw;
-
-      const overlay = document.getElementById('modal-overlay');
-      overlay.style.display = 'flex';
+      if (!lastRenderedText || lastRenderedText.startsWith('//') || lastRenderedText.startsWith('No se')) return;
+      modalRawText = lastRenderedText;
+      document.getElementById('modal-overlay').style.display = 'flex';
       document.getElementById('modal-search').value = '';
       document.getElementById('search-count').textContent = '';
       document.getElementById('search-count').className = '';
-
-      renderModalContent(raw, '');
+      renderModalContent(modalRawText, '');
       setTimeout(() => document.getElementById('modal-search').focus(), 100);
-
       document.addEventListener('keydown', escapeModal);
     }
 
     function renderModalContent(text, query) {
       const mb = document.getElementById('modal-body');
       let html = syntaxHighlight(text);
-
       if (query && query.length >= 1) {
-        // Highlight search matches — operate on the rendered HTML text nodes only
-        // We escape the query and match in text spans
         const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        // Match outside HTML tags
-        html = html.replace(new RegExp(`(?![^<]*>)(${escaped})`, 'gi'),
-          `<span class="j-highlight">$1</span>`);
+        html = html.replace(new RegExp(`(?![^<]*>)(${escaped})`, 'gi'), `<span class="j-highlight">$1</span>`);
       }
       mb.innerHTML = html;
     }
@@ -837,18 +678,12 @@
     function buscarEnModal() {
       const q = document.getElementById('modal-search').value;
       renderModalContent(modalRawText, q);
-
       const countEl = document.getElementById('search-count');
-      if (q.length === 0) {
-        countEl.textContent = '';
-        countEl.className = '';
-        return;
-      }
+      if (!q.length) { countEl.textContent = ''; countEl.className = ''; return; }
       const matches = document.getElementById('modal-body').querySelectorAll('.j-highlight').length;
       if (matches > 0) {
         countEl.textContent = `${matches} coincidencia${matches !== 1 ? 's' : ''}`;
         countEl.className = 'found';
-        // Scroll to first match
         const first = document.getElementById('modal-body').querySelector('.j-highlight');
         if (first) first.scrollIntoView({ block: 'center', behavior: 'smooth' });
       } else {
@@ -861,53 +696,21 @@
       document.getElementById('modal-overlay').style.display = 'none';
       document.removeEventListener('keydown', escapeModal);
     }
-
     function cerrarModalOverlay(e) {
       if (e.target === document.getElementById('modal-overlay')) cerrarModal();
     }
-
-    function escapeModal(e) {
-      if (e.key === 'Escape') cerrarModal();
-    }
+    function escapeModal(e) { if (e.key === 'Escape') cerrarModal(); }
 
     function copiarModal() {
       if (!modalRawText) return;
       navigator.clipboard.writeText(modalRawText).then(() => {
         const btn = document.querySelector('.btn-modal-copy');
-        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Copiado`;
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> <span>Copiado</span>`;
         setTimeout(() => {
-          btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copiar`;
+          btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> <span>Copiar</span>`;
         }, 2000);
       });
     }
   </script>
-
-  <!-- MODAL -->
-  <div id="modal-overlay" style="display:none;" onclick="cerrarModalOverlay(event)">
-    <div id="modal">
-      <div id="modal-header">
-        <div style="display:flex;flex-direction:column;gap:3px;">
-          <span id="modal-title-tag">salida</span>
-          <span id="modal-title">JSON <span>Expandido</span></span>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
-          <div id="search-wrap">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);flex-shrink:0;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            <input id="modal-search" type="text" placeholder="Buscar en JSON..." oninput="buscarEnModal()" autocomplete="off" spellcheck="false" />
-            <span id="search-count"></span>
-          </div>
-          <button class="btn-modal-copy" onclick="copiarModal()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            Copiar
-          </button>
-          <button class="btn-modal-close" onclick="cerrarModal()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-          </button>
-        </div>
-      </div>
-      <pre id="modal-body"></pre>
-    </div>
-  </div>
-
 </body>
 </html>
